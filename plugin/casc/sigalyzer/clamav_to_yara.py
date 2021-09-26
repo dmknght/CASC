@@ -10,6 +10,7 @@ from .yara import convert_to_yara
 
 log = logging.getLogger("clamav_to_yara")
 
+
 def main(args, env):
     for line in sys.stdin.readlines():
         try:
@@ -22,12 +23,10 @@ def main(args, env):
         except:
             log.exception("")
 
-        
-
 
 def parse_args():
-    parser = argparse.ArgumentParser(description = "Find common ngrams in binary files")
-    parser.add_argument("-v", "--verbose", action = "count", default = 0, help = "Increase verbosity")
+    parser = argparse.ArgumentParser(description="Find common ngrams in binary files")
+    parser.add_argument("-v", "--verbose", action="count", default=0, help="Increase verbosity")
 
     args = parser.parse_args()
 
@@ -38,10 +37,11 @@ def parse_args():
             2: logging.INFO}[args.verbose]
     except KeyError:
         loglevel = logging.DEBUG
-    logging.basicConfig(level = loglevel)
+    logging.basicConfig(level=loglevel)
     logging.getLogger().setLevel(loglevel)
 
     return args
+
 
 if __name__ == "__main__":
     ret = main(parse_args(), os.environ)

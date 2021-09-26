@@ -1,15 +1,16 @@
-
 class SignatureParseException(Exception):
     pass
 
-class FixedByte():
+
+class FixedByte:
     def __init__(self, value):
         self.value = value.upper()
 
     def __repr__(self):
         return self.value
 
-class FixedString():
+
+class FixedString:
     def __init__(self, fixed_bytes):
         self.fixed_bytes = fixed_bytes
 
@@ -17,18 +18,22 @@ class FixedString():
         return self.__class__([byte] + self.fixed_bytes)
 
     def __repr__(self):
-        return "%s(%s)" %  (self.__class__.__name__, " ".join(x.__repr__() for x in self.fixed_bytes))
+        return "%s(%s)" % (self.__class__.__name__, " ".join(x.__repr__() for x in self.fixed_bytes))
+
 
 class FixedStringLenTwo(FixedString):
     pass
 
-class ShortSkip():
+
+class ShortSkip:
     def __init__(self, min, max):
         self.min = min
         self.max = max
 
-class Skip():
+
+class Skip:
     INFINITY = -1
+
     def __init__(self, min, max):
         self.min = min
         self.max = max
@@ -39,31 +44,34 @@ class Skip():
         else:
             return "Skip(%d, %d)" % (self.min, self.max)
 
-class Choice():
+
+class Choice:
     def __init__(self, choice):
         self.choice = choice
 
     def __repr__(self):
         return "Choice(%s)" % (", ".join(x.__repr__() for x in self.choice))
 
-class Not():
+
+class Not:
     def __init__(self, value):
         self.value = value
 
-class HighNibble():
+
+class HighNibble:
     def __init__(self, nibble):
         self.nibble = nibble
 
     def __repr__(self):
         return "%s?" % self.nibble
 
-class LowNibble():
+
+class LowNibble:
     def __init__(self, nibble):
         self.nibble = nibble
 
     def __repr__(self):
         return "?%s" % self.nibble
-
 
 
 class CondSubsignature(object):
@@ -72,6 +80,7 @@ class CondSubsignature(object):
 
     def __repr__(self):
         return "Sig(%d)" % self.number
+
 
 class CondLogical(object):
     COND_AND = "&"
@@ -84,20 +93,24 @@ class CondLogical(object):
 
     def __repr__(self):
         return "(%s)%s(%s)" % (repr(self.a), self.type, repr(self.b))
+
+
 class CondAnd(CondLogical):
     def __init__(self, a, b):
         super(CondAnd, self).__init__(CondLogical.COND_AND, a, b)
+
 
 class CondOr(CondLogical):
     def __init__(self, a, b):
         super(CondOr, self).__init__(CondLogical.COND_OR, a, b)
 
+
 class CondMatch(object):
     MATCH_EQUAL = "="
-    MATCH_MORE  = ">"
-    MATCH_LESS  = "<"
-    
-    def __init__(self, type, condition, count, min_signatures = 1):
+    MATCH_MORE = ">"
+    MATCH_LESS = "<"
+
+    def __init__(self, type, condition, count, min_signatures=1):
         self.type = type
         self.condition = condition
         self.count = count
@@ -109,14 +122,17 @@ class CondMatch(object):
         else:
             return "(%s)%s%d,%d" % (repr(self.condition), self.type, self.count, self.min_signatures)
 
+
 class CondMatchExact(CondMatch):
-    def __init__(self, condition, count, min_signatures = 0):
+    def __init__(self, condition, count, min_signatures=0):
         super(CondMatchExact, self).__init__(CondMatch.MATCH_EQUAL, condition, count, min_signatures)
 
+
 class CondMatchMore(CondMatch):
-    def __init__(self, condition, count, min_signatures = 0):
+    def __init__(self, condition, count, min_signatures=0):
         super(CondMatchMore, self).__init__(CondMatch.MATCH_MORE, condition, count, min_signatures)
 
+
 class CondMatchLess(CondMatch):
-    def __init__(self, condition, count, min_signatures = 0):
+    def __init__(self, condition, count, min_signatures=0):
         super(CondMatchLess, self).__init__(CondMatch.MATCH_LESS, condition, count, min_signatures)
